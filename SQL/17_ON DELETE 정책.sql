@@ -1,0 +1,34 @@
+/*
+    # ON DELETE 제약조건
+        - 자식 레코드가 참조하고 있는 부모 레코드를 삭제하려고 할 때 어떻게할지를 결정할 수 있다
+        - CASCADE, SET NULL, RESTRICT
+    
+    # ON DELETE CASCADE
+        - 부모 레코드를 삭제하면 자식 레코드를 모두 함께 삭제한다
+    
+    # ON DELETE SET NULL
+        - 부모 레코드를 삭제하면 참조하던 자식 레코드의 값을 NULL로 변경한다
+    
+    # RESTRICT (설정을 안하면 RESTRICT가 된다 즉, 기본값이다)
+        - 자식 레코드가 있으면 부모 레코드를 삭제할 수 없게한다
+*/
+SAVEPOINT S1;
+ROLLBACK S1;
+
+-- # CASCADE TEST
+DESC FRUITS4;
+INSERT INTO FRUITS4 VALUES (1, '사과', 'RED', 'L', 2000, 10);
+
+SELECT * FROM USER_CONSTRAINTS WHERE TABLE_NAME = 'FRUITS4';
+ALTER TABLE FRUITS4 DROP CONSTRAINT F4_LID_FK;
+
+ALTER TABLE fruits4 ADD
+    CONSTRAINT F4_LID_FK FOREIGN KEY(lid) REFERENCES FRUIT_LOCATIONS(LID)
+    ON DELETE SET NULL;
+
+SELECT * FROM FRUITS4;
+SELECT * FROM FRUIT_LOCATIONS;
+
+DELETE FROM FRUIT_LOCATIONS WHERE LID = 10;
+
+ALTER TABLE FRUITS2 DROP CONSTRAINT FRUITS2_LID_FK;
